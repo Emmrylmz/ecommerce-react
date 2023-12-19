@@ -1,0 +1,48 @@
+services:
+  server:
+    build:
+      context: ./sever
+      dockerfile: Dockerfile.node
+    image: myapp-server
+    container_name: myapp-node-server
+    command: node server.js
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    env_file: ./sever/.env
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+  mongo:
+    image: mongo
+    volumes:
+      - data-volume:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+  client:
+    build:
+      context: ./vite-project
+      dockerfile: Dockerfile.ReactUI
+    image: myapp-client
+    container_name: myapp-react-client
+    command: npm run dev
+    depends_on:
+      - server  
+    ports:
+      - "5173:5173"
+    networks:
+      - app-network
+
+networks:
+    app-network:
+        driver: bridge
+
+volumes:
+    data-volume:
+    node_modules:
+    web-root:
+      driver: local
