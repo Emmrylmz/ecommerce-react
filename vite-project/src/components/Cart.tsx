@@ -1,0 +1,93 @@
+import  { useContext } from "react";
+import CartItem from "./CartItem";
+import { useShoppingCart } from "../context/shoppingCartContext";
+import { useFetchData } from "../hooks/utils";
+import { IUser, productType } from "../shared/types";
+import { AuthContext } from "../context/AuthContext";
+import axios from "axios";
+
+type cartProps = {
+  isOpen: boolean;
+};
+
+const Cart = ({ isOpen }: cartProps) => {
+  const { currentUser } = useContext(AuthContext)
+  const { closeCart, cartItems } = useShoppingCart();
+  const { data, isLoading } = useFetchData<productType[]>(
+    "https://fakestoreapi.com/products"
+  );
+  const productTypeData = data as productType[];
+  
+  async function handleCheckout() {
+    if (!currentUser) {
+      console.error('User not logged in.');
+      return; // Do something to warn the user
+    }
+  
+    if (!cartItems || cartItems.length === 0) {
+      console.error('No items in cart.');
+      return; // Do something to warn the user
+    }
+    try {
+      const response = await axios.post('http://localhost:3000/checkout', {
+        cartItems,
+        userId: currentUser.user.userid,
+      });
+      
+      if (response.status === 200) {
+        console.log("success")
+      } else {
+        // Handle unsuccessful checkout: display error message, etc.
+        console.error(response.data.message || 'Checkout failed.');
+      }
+    } catch (error) {
+      console.error(error);
+      // Display user-friendly error message or navigate to error page
+    } 
+  }
+
+
+  return (
+    <>
+      {isOpen && (
+        <div
+          className="fixed top-0 left-0 h-screen w-full bg-gray-900 opacity-75 z-50 transition-opacity duration-300 ease-in-out"
+          onClick={closeCart}
+        >
+          <div
+            className="mx-auto my-10 bg-white rounded-lg shadow-lg p-4 relative max-w-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <form onSubmit={(e) => e.preventDefault()}>
+              <h2 className="text-xl font-bold mb-4">Cart</h2>
+  
+              <ul className="space-y-4">
+                {cartItems.map((item) => (
+                  <CartItem key={item.id} {...item} />
+                ))}
+              </ul>
+  
+              <div className="flex justify-end mt-4">
+                <p className="text-xl font-bold mr-auto">
+                  Total: ${cartItems.reduce((total, cartItem) => {
+                    const item = productTypeData.find(
+                      (i) => i.id === cartItem.id
+                    );
+                    return total + (item?.price || 0) * cartItem.quantity;
+                  }, 0)}
+                </p>
+                <button
+                  type="submit"
+                  className="ml-auto bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700"
+                  onClick={handleCheckout}
+                >
+                  Checkout
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
+  );}
+export default Cart;
