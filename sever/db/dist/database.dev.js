@@ -7,8 +7,11 @@ exports["default"] = void 0;
 
 var _mongoose = _interopRequireDefault(require("mongoose"));
 
+<<<<<<< HEAD
 require("dotenv/config");
 
+=======
+>>>>>>> bbeb05e9ee6f5890eb29058bd2feb7c18e67accf
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var connectDB = function connectDB() {
@@ -18,7 +21,11 @@ var connectDB = function connectDB() {
         case 0:
           _context.prev = 0;
           _context.next = 3;
+<<<<<<< HEAD
           return regeneratorRuntime.awrap(_mongoose["default"].connect(process.env.MONGO_KEY).then(function () {
+=======
+          return regeneratorRuntime.awrap(_mongoose["default"].connect("mongodb+srv://banleue13:EmV9ymdlFExTYae6@cluster0.lvzd0dt.mongodb.net/?retryWrites=true&w=majority").then(function () {
+>>>>>>> bbeb05e9ee6f5890eb29058bd2feb7c18e67accf
             console.log("something?");
           }));
 

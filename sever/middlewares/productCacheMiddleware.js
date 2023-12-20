@@ -3,6 +3,7 @@ import cache from 'redis'; // Choose your caching library
 
 const client = cache.createClient();
 
+<<<<<<< HEAD
 async function fetchApiData(id) {
   const apiResponse = await axios.get(
     `https://fakestoreapi.com/products/${id}`
@@ -13,6 +14,10 @@ async function fetchApiData(id) {
 
 export default function cacheMiddleware(req, res, next) {
   const key = req.params.productId; // Define your cache key logic (e.g., URL, params)
+=======
+export default function cacheMiddleware(req, res, next) {
+  const key = req.originalUrl; // Define your cache key logic (e.g., URL, params)
+>>>>>>> bbeb05e9ee6f5890eb29058bd2feb7c18e67accf
 
   client.get(key, async (err, cachedData) => {
     if (err) {
