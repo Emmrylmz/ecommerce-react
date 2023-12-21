@@ -7,96 +7,66 @@ exports["default"] = cacheMiddleware;
 
 var _express = _interopRequireDefault(require("express"));
 
-var _redis = _interopRequireDefault(require("redis"));
+var _redis = _interopRequireDefault(require("../redis.js"));
+
+var _nodeFetch = _interopRequireDefault(require("node-fetch"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-// Choose your caching library
-var client = _redis["default"].createClient();
-
-function fetchApiData(id) {
-  var apiResponse;
-  return regeneratorRuntime.async(function fetchApiData$(_context) {
+function cacheMiddleware(req, res, next) {
+  var cachedData, response, data;
+  return regeneratorRuntime.async(function cacheMiddleware$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _context.next = 2;
-          return regeneratorRuntime.awrap(axios.get("https://fakestoreapi.com/products/".concat(id)));
+          _context.prev = 0;
+          _context.next = 3;
+          return regeneratorRuntime.awrap(_redis["default"].get("1"));
 
-        case 2:
-          apiResponse = _context.sent;
-          console.log("Request sent to the API");
-          return _context.abrupt("return", apiResponse.data);
+        case 3:
+          cachedData = _context.sent;
 
-        case 5:
+          if (!cachedData) {
+            _context.next = 9;
+            break;
+          }
+
+          console.log('Serving data from cache');
+          next();
+          _context.next = 18;
+          break;
+
+        case 9:
+          _context.next = 11;
+          return regeneratorRuntime.awrap((0, _nodeFetch["default"])("https://fakestoreapi.com/products"));
+
+        case 11:
+          response = _context.sent;
+          _context.next = 14;
+          return regeneratorRuntime.awrap(response.json());
+
+        case 14:
+          data = _context.sent;
+          _context.next = 17;
+          return regeneratorRuntime.awrap(_redis["default"].set(key, JSON.parse(data), 60 * 60));
+
+        case 17:
+          // Cache raw data
+          next();
+
+        case 18:
+          _context.next = 23;
+          break;
+
+        case 20:
+          _context.prev = 20;
+          _context.t0 = _context["catch"](0);
+          console.error("Error in cache middleware:", _context.t0); // Handle the error gracefully, e.g., send a custom error response
+
+        case 23:
         case "end":
           return _context.stop();
       }
     }
-  });
-}
-
-function cacheMiddleware(req, res, next) {
-  var key = req.params.productId; // Define your cache key logic (e.g., URL, params)
-
-  client.get(key, function _callee(err, cachedData) {
-    var response, data;
-    return regeneratorRuntime.async(function _callee$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            if (!err) {
-              _context2.next = 3;
-              break;
-            }
-
-            console.error(err);
-            return _context2.abrupt("return", next(err));
-
-          case 3:
-            if (!cachedData) {
-              _context2.next = 6;
-              break;
-            }
-
-            // Send cached data if present
-            console.log('Serving data from cache');
-            return _context2.abrupt("return", res.send(JSON.parse(cachedData)));
-
-          case 6:
-            _context2.prev = 6;
-            _context2.next = 9;
-            return regeneratorRuntime.awrap(fetch(req.originalUrl));
-
-          case 9:
-            response = _context2.sent;
-            _context2.next = 12;
-            return regeneratorRuntime.awrap(response.json());
-
-          case 12:
-            data = _context2.sent;
-            _context2.next = 15;
-            return regeneratorRuntime.awrap(client.set(key, JSON.stringify(data), 60 * 60));
-
-          case 15:
-            // 1 hour TTL
-            // Send data and proceed to next middleware
-            res.send(data);
-            next();
-            _context2.next = 23;
-            break;
-
-          case 19:
-            _context2.prev = 19;
-            _context2.t0 = _context2["catch"](6);
-            console.error(_context2.t0);
-            next(_context2.t0); // Handle fetch errors
-
-          case 23:
-          case "end":
-            return _context2.stop();
-        }
-      }
-    }, null, null, [[6, 19]]);
-  });
+  }, null, null, [[0, 20]]);
 }

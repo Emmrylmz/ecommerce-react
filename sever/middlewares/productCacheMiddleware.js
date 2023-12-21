@@ -1,45 +1,26 @@
 import express from 'express';
-import cache from 'redis'; // Choose your caching library
+import client from '../redis.js';
+import fetch from 'node-fetch';
 
-const client = cache.createClient();
 
-async function fetchApiData(id) {
-  const apiResponse = await axios.get(
-    `https://fakestoreapi.com/products/${id}`
-  );
-  console.log("Request sent to the API");
-  return apiResponse.data;
-}
+export default async function cacheMiddleware(req, res, next) {
 
-export default function cacheMiddleware(req, res, next) {
-  const key = req.params.productId; // Define your cache key logic (e.g., URL, params)
-
-  client.get(key, async (err, cachedData) => {
-    if (err) {
-      console.error(err);
-      return next(err); // Handle errors
-    }
+  try {
+    const cachedData = await client.get("1");
 
     if (cachedData) {
-      // Send cached data if present
       console.log('Serving data from cache');
-      return res.send(JSON.parse(cachedData));
-    }
-
-    try {
-      const response = await fetch(req.originalUrl);
+     
+      next()
+    } else {
+      const response = await fetch("https://fakestoreapi.com/products");
       const data = await response.json();
 
-      // Set cache with a predefined TTL
-      await client.set(key, JSON.stringify(data), 60 * 60); // 1 hour TTL
-
-      // Send data and proceed to next middleware
-      res.send(data);
-      next();
-    } catch (error) {
-      console.error(error);
-      next(error); // Handle fetch errors
+      await client.set(key, JSON.parse(data), 60 * 60); // Cache raw data
+      next()
     }
-  });
+  } catch (error) {
+    console.error("Error in cache middleware:", error);
+    // Handle the error gracefully, e.g., send a custom error response
+  }
 }
-

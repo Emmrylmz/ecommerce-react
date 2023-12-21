@@ -7,96 +7,87 @@ exports.checkout = void 0;
 
 var _models = _interopRequireDefault(require("../models/models.js"));
 
+var _redis = _interopRequireDefault(require("../redis.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var checkout = function checkout(req, res) {
-  var products, _req$body, userId, cartItems, user, purchasedProducts, totalAmount;
+  var cachedProducts, parsed, _req$body, userId, cartItems, user, purchasedProducts, totalAmount, newPurchase;
 
-  return regeneratorRuntime.async(function checkout$(_context2) {
+  return regeneratorRuntime.async(function checkout$(_context) {
     while (1) {
-      switch (_context2.prev = _context2.next) {
+      switch (_context.prev = _context.next) {
         case 0:
-          products = req.data || []; // Define fallback if cache is empty
+          _context.next = 2;
+          return regeneratorRuntime.awrap(_redis["default"].get("1"));
 
-          console.log(products);
-          _context2.prev = 2;
-          _req$body = req.body, userId = _req$body.userId, cartItems = _req$body.cartItems;
-          _context2.next = 6;
+        case 2:
+          cachedProducts = _context.sent;
+          parsed = JSON.parse(cachedProducts);
+          _context.prev = 4;
+          _req$body = req.body, userId = _req$body.userId, cartItems = _req$body.cartItems; // Fetch user with populated purchases
+
+          _context.next = 8;
           return regeneratorRuntime.awrap(_models["default"].findById(userId).populate('purchaseHistory'));
 
-        case 6:
-          user = _context2.sent;
-          _context2.next = 9;
-          return regeneratorRuntime.awrap(Promise.all(cartItems.map(function _callee(_ref) {
-            var productId, quantity, product;
-            return regeneratorRuntime.async(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    productId = _ref.productId, quantity = _ref.quantity;
-                    _context.next = 3;
-                    return regeneratorRuntime.awrap(products.findById(productId));
-
-                  case 3:
-                    product = _context.sent;
-
-                    if (product) {
-                      _context.next = 6;
-                      break;
-                    }
-
-                    throw new Error("Product with ID ".concat(productId, " not found."));
-
-                  case 6:
-                    return _context.abrupt("return", {
-                      product: product,
-                      quantity: quantity,
-                      subTotal: product.price * quantity
-                    });
-
-                  case 7:
-                  case "end":
-                    return _context.stop();
-                }
-              }
+        case 8:
+          user = _context.sent;
+          _context.next = 11;
+          return regeneratorRuntime.awrap(Promise.all(cartItems.map(function (_ref) {
+            var productId = _ref.id,
+                quantity = _ref.quantity;
+            var product = parsed.find(function (object) {
+              return object.id === productId;
             });
+
+            if (!product) {
+              throw new Error("Product with ID ".concat(productId, " not found."));
+            }
+
+            return {
+              id: productId,
+              quantity: quantity,
+              subTotal: product.price * quantity
+            };
           })));
 
-        case 9:
-          purchasedProducts = _context2.sent;
+        case 11:
+          purchasedProducts = _context.sent;
           totalAmount = purchasedProducts.reduce(function (sum, _ref2) {
             var subTotal = _ref2.subTotal;
             return sum + subTotal;
           }, 0);
-          user.purchaseHistory.push({
+          newPurchase = {
             datePurchased: new Date(),
             items: purchasedProducts,
             totalAmount: totalAmount
-          });
-          _context2.next = 14;
+          };
+          user.purchaseHistory.push(newPurchase);
+          _context.next = 17;
           return regeneratorRuntime.awrap(user.save());
 
-        case 14:
-          res.send({
+        case 17:
+          res.status(200).json({
             message: 'Purchase successful!',
             orderDetails: user.purchaseHistory[user.purchaseHistory.length - 1]
           });
-          _context2.next = 20;
+          _context.next = 24;
           break;
 
-        case 17:
-          _context2.prev = 17;
-          _context2.t0 = _context2["catch"](2);
+        case 20:
+          _context.prev = 20;
+          _context.t0 = _context["catch"](4);
+          console.error(_context.t0);
           res.status(500).json({
-            error: _context2.t0.message
+            error: _context.t0.message || 'Internal Server Error'
           });
 
-        case 20:
+        case 24:
         case "end":
-          return _context2.stop();
+          return _context.stop();
       }
     }
-  }, null, null, [[2, 17]]);
+  }, null, null, [[4, 20]]);
 };
 
 exports.checkout = checkout;

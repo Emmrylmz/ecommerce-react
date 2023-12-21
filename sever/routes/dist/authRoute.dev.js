@@ -11,6 +11,8 @@ var _AuthController = require("../controllers/AuthController.js");
 
 var _checkoutController = require("../controllers/checkoutController.js");
 
+var _productCacheMiddleware = _interopRequireDefault(require("../middlewares/productCacheMiddleware.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var router = _express["default"].Router();
@@ -18,6 +20,6 @@ var router = _express["default"].Router();
 router.post("/signup", _AuthController.signup);
 router.post("/login", _AuthController.login);
 router.get("/logout", _AuthController.logout);
-router.post("/checkout", _checkoutController.checkout);
+router.post("/checkout", _productCacheMiddleware["default"], _checkoutController.checkout);
 var _default = router;
 exports["default"] = _default;

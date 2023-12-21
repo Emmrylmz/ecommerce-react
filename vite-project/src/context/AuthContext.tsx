@@ -1,4 +1,4 @@
-import axios, { formToJSON } from "axios";
+import axios from "axios";
 import { IUser,IInputs } from "../shared/types";
 import { useState, useEffect, createContext } from "react";
 import  useLocalStorage  from "../hooks/useLocalStorage.tsx"
@@ -73,7 +73,7 @@ interface AuthContextProps {
     localStorage.setItem("currentUser", JSON.stringify(currentUser))
    },[currentUser])
     
-      
+
     
   
     return (<AuthContext.Provider value={{currentUser, login, logout, signup}}>{children}</AuthContext.Provider>) 

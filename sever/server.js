@@ -22,6 +22,7 @@ import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 const url = process.env.DATA_SOURCE
 import cacheMiddleware from './middlewares/productCacheMiddleware.js'
+import client from './redis.js'
 
 const corsOptions = {
   origin: "http://localhost:5173",
@@ -33,7 +34,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser())
 app.use('/', router);
-app.use(cacheMiddleware);
+
+
 
 
 export async function getData(url) {

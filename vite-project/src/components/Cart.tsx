@@ -35,7 +35,7 @@ const Cart = ({ isOpen }: cartProps) => {
       });
       
       if (response.status === 200) {
-        console.log("success")
+        console.log(JSON.stringify(response))
       } else {
         // Handle unsuccessful checkout: display error message, etc.
         console.error(response.data.message || 'Checkout failed.');
