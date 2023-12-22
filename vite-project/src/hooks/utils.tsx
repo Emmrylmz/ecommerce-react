@@ -1,20 +1,36 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect } from 'react';
 
-type TApiResponse<T> = Promise<{ data: T }>;
 
-export function useFetchData<T>(url: string): { data: T | null; isLoading: boolean } {
+
+type FetchDataResult<T> = {
+  data: T | null;
+  isLoading: boolean;
+}
+
+export default function useFetchData<T>(url: string): FetchDataResult<T> {
   const [data, setData] = useState<T | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+      const fetchedData = await response.json() as T;
+      setData(fetchedData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   useEffect(() => {
-    axios.get<T>(url)
-      .then((response) => setData(response.data))
-      .catch((error) => console.error(error))
-      .finally(() => setIsLoading(false));
-  }, [url]);
+    fetchData();
+  }, [fetchData]);
 
-  return { data, isLoading };
+  return { data, isLoading,  }; 
 }
-  
-  

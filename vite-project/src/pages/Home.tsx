@@ -2,7 +2,7 @@ import Products from '../components/Products'
 function Home() {
   return (
     <div  className=''>
-    <Products />
+    <Products url='' />
     </div>
   )
 }

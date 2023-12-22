@@ -4,13 +4,13 @@ export enum SelectedPage {
     Login = "login",
     Signup = "signup"
 }
-export interface IUser {
+export type IUser = {
     id: number;
     username: string;
     email: string;
     // Add other properties as needed
   }
-  export interface IInputs {
+  export type IInputs = {
     email: string;
     password: string;
     name?: string

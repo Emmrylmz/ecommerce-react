@@ -5,11 +5,12 @@ import Home from './pages/Home.tsx';
 import Login from './pages/Login.tsx';
 import Signup from './pages/Signup.tsx';
 import { ShoppingCartProvider } from './context/shoppingCartContext.tsx';
+import { DataContextProvider, } from './context/FetchData.tsx';
 function App() {
   
 
   return (
-    
+    <DataContextProvider>
   <ShoppingCartProvider>
       <Navbar />
         <div className="container">
@@ -22,7 +23,7 @@ function App() {
           </Routes>
         </div>
   </ShoppingCartProvider>
-    
+  </DataContextProvider>
   )
 }
 

@@ -1,10 +1,10 @@
 import  { useContext } from "react";
 import CartItem from "./CartItem";
 import { useShoppingCart } from "../context/shoppingCartContext";
-import { useFetchData } from "../hooks/utils";
-import { IUser, productType } from "../shared/types";
+import {  productType } from "../shared/types";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
+import { useProductData } from "../context/FetchData";
 
 type cartProps = {
   isOpen: boolean;
@@ -13,9 +13,7 @@ type cartProps = {
 const Cart = ({ isOpen }: cartProps) => {
   const { currentUser } = useContext(AuthContext)
   const { closeCart, cartItems } = useShoppingCart();
-  const { data, isLoading } = useFetchData<productType[]>(
-    "https://fakestoreapi.com/products"
-  );
+  const { data } = useProductData()
   const productTypeData = data as productType[];
   
   async function handleCheckout() {
@@ -46,7 +44,7 @@ const Cart = ({ isOpen }: cartProps) => {
     } 
   }
 
-
+if(data && data.length > 0){
   return (
     <>
       {isOpen && (
@@ -90,4 +88,8 @@ const Cart = ({ isOpen }: cartProps) => {
       )}
     </>
   );}
+  else return null
+}
+
+  
 export default Cart;

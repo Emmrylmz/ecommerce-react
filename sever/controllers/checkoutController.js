@@ -8,17 +8,23 @@ export const checkout = async (req, res) => {
   const parsed = JSON.parse(cachedProducts)
 
   try {
-    const { userId, cartItems } = req.body;
-    
+    const {
+      userId,
+      cartItems
+    } = req.body;
 
-    
+
+
     // Fetch user with populated purchases
     const user = await User.findById(userId).populate('purchaseHistory');
 
     const purchasedProducts = await Promise.all(
-      cartItems.map(({ id: productId, quantity }) => {
-        const product =  parsed.find((object) => object.id === productId);
-        
+      cartItems.map(({
+        id: productId,
+        quantity
+      }) => {
+        const product = parsed.find((object) => object.id === productId);
+
         if (!product) {
           throw new Error(`Product with ID ${productId} not found.`);
         }
@@ -31,7 +37,9 @@ export const checkout = async (req, res) => {
       })
     );
 
-    const totalAmount = purchasedProducts.reduce((sum, { subTotal }) => sum + subTotal, 0);
+    const totalAmount = purchasedProducts.reduce((sum, {
+      subTotal
+    }) => sum + subTotal, 0);
 
     const newPurchase = {
       datePurchased: new Date(),

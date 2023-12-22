@@ -10,7 +10,7 @@ export default async function cacheMiddleware(req, res, next) {
 
     if (cachedData) {
       console.log('Serving data from cache');
-     
+
       next()
     } else {
       const response = await fetch("https://fakestoreapi.com/products");

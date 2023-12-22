@@ -1,7 +1,7 @@
 import React from "react";
-import { useFetchData } from "../hooks/utils";
 import { productType } from "../shared/types";
 import { useShoppingCart } from "../context/shoppingCartContext";
+import { useProductData } from "../context/FetchData";
 
 type CartItemProps = {
   id: number;
@@ -9,18 +9,18 @@ type CartItemProps = {
 };
 export function CartItem({ id, quantity }: CartItemProps) {
   const { removeFromCart, increaseCartQuantity, decreaseCartQuantity } = useShoppingCart();
-
-  const { data, isLoading } = useFetchData<productType[]>(
-    "https://fakestoreapi.com/products"
-  );
-
+  const { data, isLoading } = useProductData()
+  let item: productType
   if (isLoading) {
     // Show a loading indicator or placeholder while data is fetching
     return <p>Loading...</p>;
   }
-  const productTypeData = data as productType[];
-  const item = productTypeData.find((i) => i.id === id);
-  if (item == null) return null;
+  
+  if(data&& data.length >0) item = data?.find((i) => i.id === id);
+  else return null
+
+  
+    // Handle the case where the item is not found
   return (
     <div className="flex items-center gap-2">
       <img
