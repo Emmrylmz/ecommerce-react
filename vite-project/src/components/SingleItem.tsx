@@ -1,28 +1,30 @@
-import  { useShoppingCart }  from '../context/shoppingCartContext'
+import { useShoppingCart } from "../context/shoppingCartContext";
 type StoreItemProps = {
-    id: number,
-    title: string,
-    price: number,
-    image: string
-  }
+  id: number;
+  title: string;
+  price: number;
+  image: string;
+};
 
 export const SingleItem = ({ id, title, price, image }: StoreItemProps) => {
-    const {increaseCartQuantity} = useShoppingCart()
+  const { increaseCartQuantity } = useShoppingCart();
   return (
-    <div className='flex justify-center  pt-10'>
-      <div className='gap-4 rounded-md border-solid border-2 h-auto w-32 grid grid-cols-1 grid-rows-3 justify-self-center py-0 justify-items-center border-black overflow-hidden' key={id}>
-              <img className='row-span-5 object-contain h-32 w-20' src={image}/>
-              <p className='text-sm '>{title}</p>
-              <p className='h-sm'>${price}</p>
-              <button className='border-2 rounded-md bg-green-300 hover:bg-green-500' onClick={() => increaseCartQuantity(id)} >Add +</button>
-              <div className='flex flex-col'>
-            </div>
-      </div>      
+    <div className="flex justify-center pt-10 px-4">
+      <div className="w-64 h-96 rounded-lg border border-gray-200 ..." key={id}>
+        <img className="w-full h-48 object-contain" src={image} />
+        <div className="flex flex-col justify-between h-48">
+          <p className="text-lg font-medium">{title}</p>
+          <p className="text-xl font-bold text-green-500">${price}</p>
+          <button
+            className="px-4 py-2 rounded-md font-medium bg-green-300 hover:bg-green-500 text-white"
+            onClick={() => increaseCartQuantity(id)}
+          >
+            Add +
+          </button>
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-
-
-export default SingleItem
-
+export default SingleItem;

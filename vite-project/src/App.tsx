@@ -6,6 +6,7 @@ import Login from './pages/Login.tsx';
 import Signup from './pages/Signup.tsx';
 import { ShoppingCartProvider } from './context/shoppingCartContext.tsx';
 import { DataContextProvider, } from './context/FetchData.tsx';
+import Profile from './pages/Profile.tsx';
 function App() {
   
 
@@ -19,6 +20,8 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/profile" element={<Profile />} />
+
 
           </Routes>
         </div>
