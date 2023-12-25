@@ -23,7 +23,7 @@ var router = _express["default"].Router();
 
 router.post("/signup", _AuthController.signup);
 router.post("/login", _AuthController.login);
-router.get("/logout", _AuthController.logout);
+router.post("/logout", _AuthController.logout);
 router.post("/checkout", _productCacheMiddleware["default"], _checkoutController.checkout);
 router.post('/profile', _profileController.retrievePurchaseHistory);
 var _default = router;

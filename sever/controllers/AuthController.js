@@ -73,9 +73,9 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   
+  
   // Replace "ACCESS_TOKEN_COOKIE_NAME" with your actual cookie name
-  res.clearCookie("access_token",{path:"/"});
-
+  res.clearCookie('access-token', { path: '/' }); 
   // Implement token verification and session invalidation logic here
   // ...
 

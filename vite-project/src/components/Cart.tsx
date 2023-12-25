@@ -66,7 +66,7 @@ const Cart = ({ isOpen }: cartProps) => {
               </div>
             )}
             <div
-              className="mx-auto my-10 bg-white rounded-lg shadow-lg p-4 relative max-w-md"
+              className="mx-auto my-10 bg-white rounded-lg shadow-lg p-4 relative max-w-screen-lg"
               onClick={(e) => e.stopPropagation()}
             >
               <form onSubmit={(e) => e.preventDefault()}>

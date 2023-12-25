@@ -3,7 +3,6 @@ import User from "../models/models.js";
 
 export const retrievePurchaseHistory = async (req, res) => {
     const { userId } = req.body
-    const parsed = JSON.parse(cachedProducts)
     const user = await User.findById(userId)
 
    try{

@@ -8,7 +8,16 @@ body,
 .app {
   height: 100vh;
   width: 100vw;
-  font-family: "DM Sans", sans-serif;
-  position:relative;
-  background: #4b4a4a00;;
+  font-family: 'Silkscreen', sans-serif;
+}
+body {
+  @apply font-sans;
+}
+
+.font-sans {
+  font-family: 'Slabo 27px', serif;
+}
+
+.app-font {
+  font-family: 'Slabo 27px',  serif;
 }

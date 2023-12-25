@@ -1,8 +1,8 @@
 import Products from '../components/Products'
 function Home() {
   return (
-    <div  className=''>
-    <Products url='' />
+    <div  className='bg-white-pink'>
+    <Products  />
     </div>
   )
 }

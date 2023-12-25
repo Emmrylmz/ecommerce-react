@@ -14,14 +14,13 @@ export function Products() {
 
  if (data && data.length>0) {
    mapItems = data.map((item) => (
-     <div key={item.id}>
        <SingleItem
+        key={item.id}
          id={item.id}
          title={item.title}
          price={item.price}
          image={item.image}
        />
-     </div>
    ));
  } else {
    if(isLoading)
@@ -30,9 +29,11 @@ export function Products() {
 
   return (
   <>
-    <div className="grid grid-cols-4 grid-rows-3  h-auto  place-content-center  ">
+  <div className='flex w-full h-full justify-center pt-14'>
+    <div className="grid grid-cols-4 grid-rows-3  h-auto w-4/6     ">
       {mapItems}
     </div>
+  </div>
   </>
   )
 }

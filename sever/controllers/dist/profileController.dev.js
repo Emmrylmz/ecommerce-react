@@ -10,17 +10,16 @@ var _models = _interopRequireDefault(require("../models/models.js"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var retrievePurchaseHistory = function retrievePurchaseHistory(req, res) {
-  var userId, parsed, user, purchaseHistory;
+  var userId, user, purchaseHistory;
   return regeneratorRuntime.async(function retrievePurchaseHistory$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           userId = req.body.userId;
-          parsed = JSON.parse(cachedProducts);
-          _context.next = 4;
+          _context.next = 3;
           return regeneratorRuntime.awrap(_models["default"].findById(userId));
 
-        case 4:
+        case 3:
           user = _context.sent;
 
           try {
@@ -32,7 +31,7 @@ var retrievePurchaseHistory = function retrievePurchaseHistory(req, res) {
             console.error("Error retrieving purchaseHistory", error);
           }
 
-        case 6:
+        case 5:
         case "end":
           return _context.stop();
       }

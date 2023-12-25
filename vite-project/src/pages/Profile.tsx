@@ -48,7 +48,7 @@ function Profile() {
   }
   return (
     <>
-      <div className="container mx-auto">
+      <div className="container mx-auto pt-20 w-4/5">
         <div className="grid grid-cols-1 gap-4">
           {purchased.length > 0 ? purchased : <div>Loading</div>}
         </div>
