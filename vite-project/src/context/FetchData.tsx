@@ -1,13 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import useFetchData from '../hooks/utils';
 import { productType } from '../shared/types';
 import axios from 'axios';
 
 
 
-
 type DataContextValue = {
-  data: any[] | null; // Assuming fetched data is an array
+  data: productType[] | null; // Assuming fetched data is an array
   isLoading: boolean;
   error: Error | null;
 }

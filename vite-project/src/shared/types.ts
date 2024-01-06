@@ -22,4 +22,5 @@ export type IUser = {
     category:string,
     description:string,
     image:string,
+    rating:[count: number, rate: number]
 }

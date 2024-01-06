@@ -1,8 +1,9 @@
 import axios from "axios";
 import { IUser, IInputs } from "../shared/types";
-import { useState, useEffect, createContext } from "react";
+import {  useEffect, createContext } from "react";
 import useLocalStorage from "../hooks/useLocalStorage.tsx";
 import Cookies from "js-cookie";
+import React, { useCookies } from 'react-cookie';
 
 interface AuthContextProps {
   currentUser: IUser | null;
@@ -74,13 +75,20 @@ export const AuthContextProvider: React.FC<{
       }
       );
       setCurrentUser(null);
+      localStorage.clear()
       console.log(response);
+   
     } catch (error) {
       console.error("Error during logout:", error);
     }
   };
+   useEffect(() => {
+   
+    if(currentUser === null) document.cookie('')
 
+  }, []);
   useEffect(() => {
+   
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
   }, [currentUser]);
 
